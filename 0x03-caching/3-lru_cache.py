@@ -7,10 +7,13 @@ BaseCaching = __import__('base_caching').BaseCaching
 class LRUCache(BaseCaching):
     """ class that inherits from BaseCaching """
     def __init__(self):
+        """ initialize LRU caching"""
         super().__init__()
         self.tmp = []
 
     def put(self, key, item):
+        """ method assign to the dictionary
+        the item value for the key """
         if key or item:
             if self.cache_data.get(key):
                 self.tmp.remove(key)
@@ -20,10 +23,9 @@ class LRUCache(BaseCaching):
                 discard = self.tmp.pop(0)
                 self.cache_data.pop(discard)
                 print('DISCARD: {}'.format(discard))
-        else:
-            pass
 
     def get(self, key):
+        """ method return the value linked to key """
         if self.cache_data.get(key):
             self.tmp.remove(key)
             self.tmp.append(key)
