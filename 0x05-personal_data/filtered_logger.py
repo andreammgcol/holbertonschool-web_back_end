@@ -55,3 +55,21 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         host=os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost'),
         database=os.environ.get('PERSONAL_DATA_DB_NAME'))
     return connection
+
+
+def main() -> None:
+    """ that takes no arguments and returns nothing """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT CONCAT ('name=', name, ';ssn=', ssn, ';ip=', ip,\
+        ';user_agent', user_agent, ';') AS message FROM users;")
+    msg = cursor.fetchall()
+    rec = logging.LogRecord("my_logger", logging.INFO,
+                            None, None, message, None, None)
+    formatter = RedactingFormatter(PII_FIELDS)
+    formatter.format(rec)
+    cursor.close()
+
+
+if __name__ == "__main__":
+    main()
