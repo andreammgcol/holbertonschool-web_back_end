@@ -44,7 +44,6 @@ def get_logger() -> logging.Logger:
     handler = logging.StreamHandler()
     handler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(handler)
-    return logger
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
