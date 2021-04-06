@@ -25,3 +25,21 @@ class SessionAuth(Auth):
         """
         if isinstance(session_id, str):
             return SessionAuth.user_id_by_session_id.get(session_id)
+
+    def current_user(self, request=None):
+        """method that returns a User instance based on a cookie value
+        """
+        user = self.user_id_for_session_id(self.session_cookie(request))
+        return User.get(user)
+
+    def destroy_session(self, request=None):
+        """method
+        """
+        if request:
+            session_id = self.session_cookie(request)
+            if not session_id:
+                return False
+            if not self.user_id_for_session_id(session_id):
+                return False
+            self.user_id_by_session_id.pop(session_id)
+            return True
