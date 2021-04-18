@@ -6,8 +6,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.exc import NoResultFound
-
+from sqlalchemy.exc import InvalidRequestError
 from user import Base, User
+
+k_words = ['id', 'email', 'hashed_password', 'session_id', 'reset_token']
 
 
 class DB:
@@ -44,17 +46,24 @@ class DB:
         """
         user = self._session.query(User).filter_by(**kwargs).first()
 
+        for i in kwargs.keys():
+            if i not in k_words:
+                raise InvalidRequestError
+
         if not user:
             raise NoResultFound
-        return user
+        else:
+            return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """That takes as argument a required user_id integer
             and arbitrary keyword arguments, and returns None
         """
         user = self.find_user_by(id=user_id)
+
         for key, value in kwargs.items():
-            if key not in user.__dict__:
+            if key not in k_words:
                 raise ValueError
-            setattr(user, key, value)
-        return None
+            else:
+                setattr(user, key, value)
+        self._session.commit()
