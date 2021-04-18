@@ -15,7 +15,7 @@ class DB:
     """DB class
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize a new DB instance
         """
         self._engine = create_engine("sqlite:///a.db", echo=True)
@@ -49,10 +49,11 @@ class DB:
             if i not in k_words:
                 raise InvalidRequestError
 
-        if not user:
-            raise NoResultFound
-        else:
+        if user:
             return user
+        else:
+            raise NoResultFound
+            
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """That takes as argument a required user_id integer
@@ -61,8 +62,8 @@ class DB:
         user = self.find_user_by(id=user_id)
 
         for key, value in kwargs.items():
-            if key not in k_words:
-                raise ValueError
-            else:
+            if key in k_words:
                 setattr(user, key, value)
+            else:
+                raise ValueError
         self._session.commit()
