@@ -53,7 +53,6 @@ class DB:
             return user
         else:
             raise NoResultFound
-            
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """That takes as argument a required user_id integer
