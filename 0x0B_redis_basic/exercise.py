@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ Redis client """
 
-from redis.client import Redis
+import redis
 import uuid
 from typing import Union
 
