@@ -5,6 +5,7 @@ import redis
 import uuid
 from typing import Union, Optional, Callable
 from functools import wraps
+import sys
 
 
 def count_calls(method: Callable) -> Callable:
@@ -31,6 +32,20 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(method.__qualname__ + ':outputs', output)
         return output
     return wrapper
+
+
+def replay(method: Callable):
+    """ function to display the history of calls of a particular
+    """
+    rds = redis.Redis()
+    name = method.__qualname__
+    count = rds.get(name).decode('utf-8')
+    inputs = rds.lrange(name + ':inputs', 0, -1)
+    outputs = rds.lrange(name + ':outputs', 0, -1)
+    print('{} was called {} times:'.format(name, count))
+    for i, o in zip(inputs, outputs):
+        print('{}(*{}) -> {}'.format(name, i.decode('utf-8'),
+                                     o.decode('utf-8')))
 
 
 class Cache:
