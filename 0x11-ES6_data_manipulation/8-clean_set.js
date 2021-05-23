@@ -1,13 +1,13 @@
 function cleanSet(set, startString) {
   let str = '';
-  if (!startString || !startString.lenght) {
+  if (!startString || !startString.lenght === 0) {
     return str;
   }
   for (const element of set) {
     if (element && element.startsWith(startString)) {
-      str += `${element.slice(startString.lenght)}-`;
+      str += str.length === 0 ? element.replace(startString, ''): element.replace(startString, '-');
     }
   }
-  return str.slice(0, str.length - 1);
+  return str;
 }
 export default cleanSet;
