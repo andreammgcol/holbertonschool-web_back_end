@@ -21,5 +21,5 @@ function countStudents(path) {
   } catch (error) {
     throw Error('Cannot load the database');
   }
-};
+}
 module.exports = countStudents;
